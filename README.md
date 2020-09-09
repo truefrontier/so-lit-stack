@@ -1,11 +1,33 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+## The "So LIT" Stack
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+[Statamic](https://statamic.com/) is a great CMS, [Laravel](https://laravel.com/) is a great backend, [InertiaJS](https://inertiajs.com/) is the amazing bridge between Laravel and your [VueJS](https://vuejs.org/) frontend, and [TailwindCSS](https://tailwindcss.com/) is icing on the cake.
+
+## About this Setup
+
+**TL;DR:** Check out the following key files that make this setup work:
+
+- https://github.com/truefrontier/so-lit-stack/blob/master/routes/web.php
+- https://github.com/truefrontier/so-lit-stack/blob/master/app/Http/Controllers/PageController.php
+- https://github.com/truefrontier/so-lit-stack/blob/master/resources/js/site.js
+
+Statamic is basically the headless CMS in this setup. The main difference in your typical InertiaJS setup, is the nested layout fallback system. 
+
+### Nested Layouts with Fallbacks
+
+Statamic offers Layouts and Templates, and then it passes in the Page content. If the layout or template props are empty, they return `default`. Inertia renders a Page component and offers a persistent Layout setup if you want. To combine the two, we pull a StudlyCased version of the `layout`, `template`, and `slug` properties from your Statamic page and pass them to Inertia. Inertia looks for `Layouts/<your-layout-prop>.vue`,  `Templates/<your-template-prop>.vue`, and  `Pages/<your-slug-prop>.vue` and falls back to `Layouts/Default.vue`,  `Templates/Default.vue`, and  `Pages/Default.vue` respectively if not found. This gives you SO much flexibility in how you set up your website! You can have an `Admin` layout, a `Dashboard` template, and a `Reports` page or a `Blog` template and `Default` page. 
+
+### Statamic Content as Component Props
+All of Statamic's augmented page data is sent through InertiaJS to you page component as a `cms` prop. So `<div v-html="cms.content"></div>` will give you Statamic's HTML content! It's amazing.
+
+### The Good Ol' Ways
+If there are any pages you don't want to come from Statamic, you still can explicitly do some select routes the Laravel way or the InertiaJS way.
+
+
+## Roadmap
+**This is working, but there's more to do!**
+
+1. Get [Ziggy](https://github.com/tightenco/ziggy) to get all of Statamic's urls so you can use the `<inertia-link>` component
+
 
 ## About Laravel
 
@@ -26,36 +48,3 @@ Laravel is accessible, powerful, and provides tools required for large, robust a
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
 If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
