@@ -31,6 +31,8 @@ class PageController extends FrontendController {
         }
 
         ## BEGIN EDIT 
+        // FIXME: $data->toAugmentedArray() throws an error when orderable collection is set to have a root
+        // So for temp workaround, manually make adjustments for home page
         $routeName = ltrim(str_replace('/', '.', $url), '.') ?: 'home';
 
         $pageName = collect(explode('.', $routeName))->map(function ($segment) {
@@ -42,7 +44,6 @@ class PageController extends FrontendController {
         $templateName = null;
 
         if ($data = Data::findByUri($url, Site::current()->handle())) {
-            // FIXME: Throws error when orderable collection is set to have a root
             $cms = $data->toAugmentedArray();
 
             if (isset($cms['template']) && $cms['template'] instanceof Value) {
