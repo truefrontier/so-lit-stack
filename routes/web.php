@@ -11,5 +11,13 @@
 |
  */
 
-Route::any('/{any?}', 'PageController@index')
-    ->where('any', '^!(cp)')->name('app');
+use Statamic\Facades\Collection;
+
+Collection::all()->each(function ($collection) {
+    $collection->queryEntries()->get()->each(function ($entry) {
+        $route = $entry->routeData();
+        $url = $entry->url();
+        $name = ltrim(str_replace('/', '.', $url), '.') ?: str_replace('/', '.', $route['slug']);
+        Route::any($url, 'PageController@index')->name($name);
+    });
+});
