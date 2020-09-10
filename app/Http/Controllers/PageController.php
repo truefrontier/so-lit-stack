@@ -30,23 +30,19 @@ class PageController extends FrontendController {
             $url = substr($url, 0, strpos($url, '?'));
         }
 
-        ## BEGIN EDIT - avoid error when the pages collection is set to Orderable
-        ## The root route works fine, but any "children" throw an error
-        if ($url === '/') {
-            $url = '/home';
-        }
+        ## BEGIN EDIT 
+        $routeName = ltrim(str_replace('/', '.', $url), '.') ?: 'home';
 
-        $pageName = collect(explode('/', $url))->filter()->map(function ($segment) {
+        $pageName = collect(explode('.', $routeName))->map(function ($segment) {
             return Str::studly($segment);
         })->join('/');
 
+        $cms = new \stdClass;
         $layoutName = null;
         $templateName = null;
-        $routeName = Str::studly($request->route()->getName());
-        ## END EDIT ##
 
         if ($data = Data::findByUri($url, Site::current()->handle())) {
-            ## BEGIN EDIT - return inertia render with augmented data
+            // FIXME: Throws error when orderable collection is set to have a root
             $cms = $data->toAugmentedArray();
 
             if (isset($cms['template']) && $cms['template'] instanceof Value) {
@@ -56,31 +52,16 @@ class PageController extends FrontendController {
             if (isset($cms['template']) && $cms['template'] instanceof Value) {
                 $templateName = Str::studly($cms['template']->raw());
             }
-
-            return Inertia::render($pageName, [
-                'cms' => $cms,
-            ])->withViewData([
-                'statamic' => [
-                    'cms' => $cms,
-                    'pageName' => $pageName,
-                    'layoutName' => $layoutName,
-                    'templateName' => $templateName,
-                    'routeName' => $routeName,
-                ],
-            ]);
-            ## END EDIT ##
         }
 
-        ## BEGIN EDIT - instead of 404 response, return Inertia render with empty array
-        return Inertia::render($name, [
-            'cms' => [],
+        return Inertia::render($pageName, [
+            'cms' => $cms,
         ])->withViewData([
             'statamic' => [
-                'cms' => [],
+                'cms' => $cms,
                 'pageName' => $pageName,
                 'layoutName' => $layoutName,
                 'templateName' => $templateName,
-                'routeName' => $routeName,
             ],
         ]);
         ## END EDIT ##
